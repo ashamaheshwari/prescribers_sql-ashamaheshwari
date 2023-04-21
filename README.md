@@ -1,8 +1,8 @@
-## Tennessee Prescribers Database
+## Tennessee Prescribers Database (PostgresSQL Exercise 2)
 
-In this project, you will be working with a database created from the 2017 Medicare Part D Prescriber Public Use File. 
-To get started, you'll need to create a new database named "prescribers" and restore the .tar file into this new database.
-For your reference, an ERD is provided (ERD.png).
+
+In this project, we worked with a database created from the 2017 Medicare Part D Prescriber Public Use File. 
+For reference, an ERD is provided (ERD.png).
 
 1. 
     a. Which prescriber had the highest total number of claims (totaled over all drugs)? Report the npi and the total number of claims.
