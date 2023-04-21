@@ -1,7 +1,4 @@
-/*
-SELECT *
-FROM prescriber
-*/
+
 -- 1. a. Which prescriber had the highest total number of claims (totaled over all drugs)?
         --Report the npi and the total number of claims.
 
@@ -33,7 +30,7 @@ ON sum_claims.npi = p.npi
 ORDER BY total_claims DESC;
 
 
---     b. Repeat the above, but this time report the nppes_provider_first_name, nppes_provider_last_org_name,  specialty_description, and the total number of claims.
+-- b. Repeat the above, but this time report the nppes_provider_first_name, nppes_provider_last_org_name,  specialty_description, and the total number of claims.
 
 SELECT p1.npi,
        nppes_provider_first_name,
@@ -48,7 +45,7 @@ ORDER BY total_claims DESC
 LIMIT 1;
 
 -- 2. 
---     a. Which specialty had the most total number of claims (totaled over all drugs)?
+-- a. Which specialty had the most total number of claims (totaled over all drugs)?
 
 SELECT specialty_description, 
        SUM(sub.total_claims) AS total_number_claims
@@ -64,7 +61,7 @@ GROUP BY specialty_description
 ORDER BY total_number_claims DESC;
 
 
---     b. Which specialty had the most total number of claims for opioids?
+-- b. Which specialty had the most total number of claims for opioids?
 
 SELECT specialty_description, 
        SUM(sub.total_claim) AS total_number_claims
@@ -101,13 +98,7 @@ GROUP BY specialty_description
 ORDER BY total_claims DESC
 */
 
---USING CTE
-/*
-WITH unique_drugs AS (
-SELECT DISTINCT drug_name,
- opioid_drug_flag
-FROM drug
-*/
+
 
 -- code to check the multiple generic name
 /*
@@ -118,7 +109,8 @@ HAVING COUNT (DISTINCT opioid_drug_flag) = 2
 */
 
 
---     c. **Challenge Question:** Are there any specialties that appear in the prescriber table that have no associated prescriptions in the prescription table?
+--     c. **Challenge Question:** Are there any specialties that appear in the prescriber table that have no associated prescriptions in
+--the prescription table?
 
 SELECT 
       specialty_description, 
@@ -140,6 +132,7 @@ FROM prescriber
 INNER JOIN prescription
 USING(npi)
 );
+
 
 SELECT DISTINCT specialty_description  
 FROM prescriber
@@ -163,6 +156,7 @@ WHERE specialty_description NOT IN (SELECT DISTINCT specialty_description
 									USING(npi) -- There are 92 specialites here
 								   )
 
+
 --     d. **Difficult Bonus:** *Do not attempt until you have solved all other problems!* For each specialty, report the percentage of total claims by that specialty which are for opioids. Which specialties have a high percentage of opioids?
 SELECT t1.specialty_description, t1.total_opioid_claim, t2.total_specialty, ROUND(t1.total_opioid_claim * 100.0 / t2.total_specialty, 1) AS Percent
 FROM 
@@ -184,8 +178,10 @@ LEFT JOIN
  GROUP BY specialty_description) AS t2
 ON (t1.specialty_description = t2.specialty_description)
 ORDER BY Percent DESC;
+
+
 -- 3. 
---     a. Which drug (generic_name) had the highest total drug cost?
+-- a. Which drug (generic_name) had the highest total drug cost?
 
 SELECT 
        generic_name, 
@@ -197,7 +193,7 @@ GROUP BY generic_name
 ORDER BY total_cost DESC;
 
 
---     b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.**
+-- b. Which drug (generic_name) has the hightest total cost per day? **Bonus: Round your cost per day column to 2 decimal places. Google ROUND to see how this works.**
 
 SELECT generic_name, 
        ROUND(SUM(total_drug_cost)/SUM(total_day_supply), 2) AS total_cost_per_day
@@ -208,7 +204,7 @@ GROUP BY generic_name
 ORDER BY total_cost_per_day DESC
 
 -- 4. 
---     a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
+-- a. For each drug in the drug table, return the drug name and then a column named 'drug_type' which says 'opioid' for drugs which have opioid_drug_flag = 'Y', says 'antibiotic' for those drugs which have antibiotic_drug_flag = 'Y', and says 'neither' for all other drugs.
 
 SELECT drug_name, 
        CASE WHEN opioid_drug_flag = 'Y' THEN 'opioid'
@@ -218,13 +214,14 @@ SELECT drug_name,
 FROM drug;
 
 
---     b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
+-- b. Building off of the query you wrote for part a, determine whether more was spent (total_drug_cost) on opioids or on antibiotics. Hint: Format the total costs as MONEY for easier comparision.
 SELECT SUM(CASE WHEN opioid_drug_flag = 'Y' THEN total_drug_cost END)::MONEY AS opioid_drug_cost,
 	   SUM(CASE WHEN antibiotic_drug_flag = 'Y' THEN total_drug_cost END):: MONEY AS antibiotic_drug_cost
 FROM drug
 	 INNER JOIN prescription
 	 USING(drug_name);
-	 
+
+
 -- 5. 
 --     a. How many CBSAs are in Tennessee? **Warning:** The cbsa table contains information for all states, not just Tennessee.
 
@@ -236,8 +233,6 @@ WHERE state = 'TN'
 
 
 --     b. Which cbsa has the largest combined population? Which has the smallest? Report the CBSA name and total population.
-SELECT *
-FROM population
 
 SELECT 
        cbsaname,
@@ -276,9 +271,6 @@ INNER JOIN drug
 USING(drug_name)
 WHERE total_claim_count >= 3000;
 
-
-
-
 --     c. Add another column to you answer from the previous part which gives the prescriber first and last name associated with each row.
 SELECT drug_name, 
        total_claim_count,
@@ -304,10 +296,6 @@ WHERE p.specialty_description = 'Pain Management' AND
       p.nppes_provider_city = 'NASHVILLE' AND
 	  d.opioid_drug_flag = 'Y';
 	  
-	  
-
-	  
-
 --     b. Next, report the number of claims per drug per prescriber. Be sure to include all combinations, whether or not the prescriber had any claims. You should report the npi, the drug name, and the number of claims (total_claim_count).
 SELECT 
 	npi, 
@@ -336,6 +324,7 @@ WHERE specialty_description = 'Pain Management'
 AND nppes_provider_city = 'NASHVILLE'
 AND opioid_drug_flag = 'Y';
 
+--Bonus Questions
 -- -- In this set of exercises you are going to explore additional ways to group and organize the output of a query when using postgres. 
 
 -- -- For the first few exercises, we are going to compare the total number of claims from Interventional Pain Management Specialists compared to those from Pain Managment specialists.
@@ -376,38 +365,3 @@ GROUP BY p2.specialty_description
 -- -- Interventional Pain Management|       55906|
 -- -- Pain Management               |       70853|
 
--- -- 3. Now, instead of using UNION, make use of GROUPING SETS (https://www.postgresql.org/docs/10/queries-table-expressions.html#QUERIES-GROUPING-SETS) to achieve the same output.
-
--- -- 4. In addition to comparing the total number of prescriptions by specialty, let's also bring in information about the number of opioid vs. non-opioid claims by these two specialties. Modify your query (still making use of GROUPING SETS so that your output also shows the total number of opioid claims vs. non-opioid claims by these two specialites:
-
--- -- specialty_description         |opioid_drug_flag|total_claims|
--- -- ------------------------------|----------------|------------|
--- --                               |                |      129726|
--- --                               |Y               |       76143|
--- --                               |N               |       53583|
--- -- Pain Management               |                |       72487|
--- -- Interventional Pain Management|                |       57239|
-
--- -- 5. Modify your query by replacing the GROUPING SETS with ROLLUP(opioid_drug_flag, specialty_description). How is the result different from the output from the previous query?
-
--- -- 6. Switch the order of the variables inside the ROLLUP. That is, use ROLLUP(specialty_description, opioid_drug_flag). How does this change the result?
-
--- -- 7. Finally, change your query to use the CUBE function instead of ROLLUP. How does this impact the output?
-
--- -- 8. In this question, your goal is to create a pivot table showing for each of the 4 largest cities in Tennessee (Nashville, Memphis, Knoxville, and Chattanooga), the total claim count for each of six common types of opioids: Hydrocodone, Oxycodone, Oxymorphone, Morphine, Codeine, and Fentanyl. For the purpose of this question, we will put a drug into one of the six listed categories if it has the category name as part of its generic name. For example, we could count both of "ACETAMINOPHEN WITH CODEINE" and "CODEINE SULFATE" as being "CODEINE" for the purposes of this question.
-
--- -- The end result of this question should be a table formatted like this:
-
--- -- city       |codeine|fentanyl|hyrdocodone|morphine|oxycodone|oxymorphone|
--- -- -----------|-------|--------|-----------|--------|---------|-----------|
--- -- CHATTANOOGA|   1323|    3689|      68315|   12126|    49519|       1317|
--- -- KNOXVILLE  |   2744|    4811|      78529|   20946|    84730|       9186|
--- -- MEMPHIS    |   4697|    3666|      68036|    4898|    38295|        189|
--- -- NASHVILLE  |   2043|    6119|      88669|   13572|    62859|       1261|
-
--- -- For this question, you should look into use the crosstab function, which is part of the tablefunc extension (https://www.postgresql.org/docs/9.5/tablefunc.html). In order to use this function, you must (one time per database) run the command
--- -- 	CREATE EXTENSION tablefunc;
-
--- -- Hint #1: First write a query which will label each drug in the drug table using the six categories listed above.
--- -- Hint #2: In order to use the crosstab function, you need to first write a query which will produce a table with one row_name column, one category column, and one value column. So in this case, you need to have a city column, a drug label column, and a total claim count column.
--- -- Hint #3: The sql statement that goes inside of crosstab must be surrounded by single quotes. If the query that you are using also uses single quotes, you'll need to escape them by turning them into double-single quotes.
