@@ -2,7 +2,7 @@
 
 
 In this project, we worked with a database created from the 2017 Medicare Part D Prescriber Public Use File. 
-For reference, an ERD is provided (ERD.png).
+For reference, an ERD is provided (ERD.png). The list of question were provided
 
 1. 
     a. Which prescriber had the highest total number of claims (totaled over all drugs)? Report the npi and the total number of claims.
